@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Potong &amp; Pisah Ikon</title>
+<style>
+:root{--bg:#f2f1f6;--card:#fff;--tx:#17141f;--mu:#6e6a7c;--ac:#e3226f;--on:#fff;--bd:#e4e1ec;--ck:#ebe9f1;--sh:0 1px 2px rgba(23,20,31,.05),0 10px 28px rgba(23,20,31,.07)}
+@media(prefers-color-scheme:dark){:root{--bg:#0f0d14;--card:#191620;--tx:#f1eff7;--mu:#9a95ab;--ac:#ff4d94;--on:#1c0612;--bd:#2a2635;--ck:#242030;--sh:0 1px 2px rgba(0,0,0,.4),0 10px 28px rgba(0,0,0,.4)}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{background:radial-gradient(900px 420px at 90% -8%,color-mix(in srgb,var(--ac) 16%,transparent),transparent 65%),var(--bg);background-attachment:fixed;color:var(--tx);font:15px/1.5 "Avenir Next","SF Pro Rounded","Segoe UI Variable",system-ui,sans-serif;padding:env(safe-area-inset-top) 0 calc(env(safe-area-inset-bottom) + 28px)}
+main{max-width:760px;margin:0 auto;padding:18px 16px;display:grid;gap:16px}
+.top{display:flex;gap:14px;align-items:center}
+.mark{flex:none;width:46px;height:46px;border-radius:15px;background:linear-gradient(135deg,var(--ac),#ff9a5a);position:relative;box-shadow:var(--sh)}
+.mark::after{content:"";position:absolute;inset:11px;border:3px solid #fff;border-radius:5px}
+h1{font-size:23px;font-weight:800;margin:0;letter-spacing:-.02em}
+.sub{color:var(--mu);margin:2px 0 0;font-size:13.5px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:22px;padding:16px;box-shadow:var(--sh)}
+.hide{display:none!important}
+#drop,#vdrop{display:grid;place-items:center;text-align:center;gap:6px;min-height:260px;border:2px dashed color-mix(in srgb,var(--ac) 45%,var(--bd));border-radius:26px;padding:28px;cursor:pointer;background:color-mix(in srgb,var(--card) 70%,transparent)}
+#drop.over,#vdrop.over{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 8%,var(--card))}
+#drop b,#vdrop b{font-size:18px}
+#drop span,#vdrop span{color:var(--mu)}
+button,.btn{font:inherit;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:999px;padding:10px 18px;min-height:46px;cursor:pointer;transition:transform .12s,background .12s}
+button:active{transform:scale(.97)}
+button:disabled{opacity:.6}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--ac) 60%,transparent);outline-offset:2px}
+.pri{background:linear-gradient(135deg,var(--ac),color-mix(in srgb,var(--ac) 70%,#ff9a5a));color:var(--on);border:0;font-weight:700;box-shadow:0 6px 18px color-mix(in srgb,var(--ac) 35%,transparent)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.sp{justify-content:space-between}
+.bar{position:sticky;bottom:calc(env(safe-area-inset-bottom,0px) + 8px);z-index:5;flex-wrap:nowrap;padding:8px;background:color-mix(in srgb,var(--card) 82%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--bd);border-radius:999px;box-shadow:var(--sh)}
+.bar #run{flex:1}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--bd);padding:4px;border-radius:999px}
+.tabs button{border:0;background:transparent;color:var(--mu);box-shadow:none}
+.tabs button.on{background:var(--card);color:var(--tx);font-weight:700;box-shadow:var(--sh)}
+#stage{position:relative;display:grid;place-items:center;padding:8px;background:radial-gradient(var(--bd) 1px,transparent 1.5px) 0 0/16px 16px;border-radius:14px}
+#stage::before,#stage::after{content:"";position:absolute;width:18px;height:18px;border:2px solid var(--ac);pointer-events:none}
+#stage::before{top:2px;left:2px;border-right:0;border-bottom:0;border-radius:6px 0 0 0}
+#stage::after{bottom:2px;right:2px;border-left:0;border-top:0;border-radius:0 0 6px 0}
+canvas#cv{background:conic-gradient(var(--ck) 25%,transparent 0 50%,var(--ck) 0 75%,transparent 0) 0 0/16px 16px;touch-action:none;border-radius:4px;max-width:100%;box-shadow:0 4px 18px rgba(0,0,0,.15)}
+.chip{min-height:40px;padding:8px 16px}
+.chip.on{background:var(--tx);color:var(--bg);border-color:var(--tx);font-weight:700}
+label.f{display:grid;gap:4px;color:var(--mu);font-size:13px;flex:1;min-width:130px}
+label.f input[type=number]{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:14px;padding:10px;width:100%}
+input[type=range]{width:100%;accent-color:var(--ac)}
+.chk{display:flex;gap:10px;align-items:center;min-height:36px}
+.chk input{width:20px;height:20px;accent-color:var(--ac)}
+#info,#vinfo{color:var(--mu);font-size:13px;min-height:20px;padding:8px 4px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+.th{position:relative;aspect-ratio:1;display:grid;place-items:center;border:2px solid var(--ac);border-radius:16px;padding:8px;cursor:pointer;background:conic-gradient(var(--ck) 25%,transparent 0 50%,var(--ck) 0 75%,transparent 0) 0 0/12px 12px}
+.th canvas,.th img{max-width:100%;max-height:100%}
+.th.off{border-color:var(--bd);opacity:.4}
+.th i{position:absolute;top:5px;left:5px;font-style:normal;font-size:11px;font-weight:700;background:var(--card);border-radius:999px;padding:1px 7px}
+.th em{position:absolute;bottom:5px;right:5px;font-style:normal;font-size:10px;font-weight:800;background:var(--ac);color:var(--on);border-radius:999px;padding:1px 7px}
+.note{color:var(--mu);font-size:13px;margin:2px 0 0}
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 84px);transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw;z-index:9}
+#toast.show{opacity:1}
+#vstage{position:relative;margin:0 auto;background:conic-gradient(var(--ck) 25%,transparent 0 50%,var(--ck) 0 75%,transparent 0) 0 0/16px 16px;border-radius:6px;box-shadow:0 4px 18px rgba(0,0,0,.15)}
+.ov rect{fill:rgba(227,34,111,.1);stroke:var(--ac);stroke-width:2;vector-effect:non-scaling-stroke;cursor:pointer}
+.ov rect.off{fill:transparent;stroke:#888;stroke-dasharray:4 3;opacity:.7}
+.ov text{font-weight:700;fill:var(--ac);pointer-events:none}
+label.f select{font:inherit;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:14px;padding:10px}
+.sw{display:flex;flex-wrap:wrap;gap:8px}
+.sw:empty::before{content:"Belum ada";color:var(--mu);font-size:13px}
+.sc{display:flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;min-height:44px;font-size:13px}
+.sc i{width:28px;height:28px;border-radius:50%;border:1px solid rgba(128,128,128,.5);flex:none}
+.sc small{color:var(--mu)}
+.sc.rm{border-style:dashed}
+.sc.rm span{text-decoration:line-through}
+textarea{font:inherit;font-size:14px;color:var(--tx);background:var(--bg);border:1px solid var(--bd);border-radius:14px;padding:10px;width:100%;resize:vertical}
+.th.cap{padding-bottom:24px}
+.th small{position:absolute;left:4px;right:4px;bottom:4px;font-size:10px;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:var(--card);border-radius:999px;padding:2px 6px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <header class="top">
+    <span class="mark" aria-hidden="true"></span>
+    <div><h1>Potong &amp; pisah ikon</h1><p class="sub">Offline di perangkat Anda. Gambar tidak pernah diunggah.</p></div>
+  </header>
+
+  <div class="tabs" id="apptabs"><button id="aV" class="on">Editor vektor</button><button id="aB">Bitmap ke ikon</button></div>
+
+  <label id="drop">
+    <b>Pilih gambar JPG atau PNG</b>
+    <span>Ketuk di sini, atau seret file ke halaman ini</span>
+    <input id="file" type="file" accept="image/png,image/jpeg" hidden>
+  </label>
+
+  <section id="ws" class="hide" style="display:grid;gap:14px">
+    <div class="tabs">
+      <button id="tg" class="on">Grid ikon</button>
+      <button id="tc">Potong bebas</button>
+    </div>
+
+    <div class="card">
+      <div id="stage"><canvas id="cv"></canvas></div>
+      <div id="info"></div>
+    </div>
+
+    <div class="card" id="pgrid" style="display:grid;gap:12px">
+      <div class="row" id="presets"></div>
+      <div class="row">
+        <label class="f">Baris<input id="rows" type="number" min="1" max="30" value="3" inputmode="numeric"></label>
+        <label class="f">Kolom<input id="cols" type="number" min="1" max="30" value="3" inputmode="numeric"></label>
+      </div>
+      <label class="f">Margin tepi: <b id="mv">0</b> px<input id="margin" type="range" min="0" max="100" value="0"></label>
+      <label class="f">Jarak antar sel: <b id="gv">0</b> px<input id="gap" type="range" min="0" max="100" value="0"></label>
+      <div class="row">
+        <label class="chk"><input id="trim" type="checkbox" checked> Pangkas ruang kosong, lewati sel kosong</label>
+      </div>
+      <label class="f">Ruang di sekitar ikon: <b id="pv">4</b> px<input id="pad" type="range" min="0" max="40" value="4"></label>
+    </div>
+
+    <div class="card hide" id="pcrop">
+      <p class="note" style="margin:0">Geser kotak untuk memindahkan. Tarik tepi atau sudut untuk mengubah ukuran.</p>
+    </div>
+
+    <div class="row bar">
+      <button class="pri" id="run" style="flex:1">Potong</button>
+      <button id="again">Ganti gambar</button>
+    </div>
+
+    <div id="out" class="hide" style="display:grid;gap:16px">
+      <div class="card" style="display:grid;gap:12px">
+        <div class="row sp"><b id="cnt"></b><button id="all" class="chip">Pilih semua / kosongkan</button></div>
+        <div class="tabs"><button id="vA" class="on">Gambar asli</button><button id="vV">Hasil vektor</button></div>
+        <div class="grid" id="res"></div>
+      </div>
+      <div class="card" style="display:grid;gap:12px">
+        <div><b>Konversi ke vektor</b><p class="note">Tiap ikon dilacak menjadi kurva Bézier berwarna yang halus. Pilih tingkat detail:</p></div>
+        <div class="row" id="vp"></div>
+        <label class="chk"><input id="rmbg" type="checkbox" checked> Hapus warna latar</label>
+        <button class="pri" id="vgo">Konversi ikon terpilih ke vektor</button>
+      </div>
+      <div class="card" style="display:grid;gap:12px">
+        <b>Simpan</b>
+        <div class="row" id="fmts"></div>
+        <label class="f hide" id="qw">Kualitas JPG: <b id="qv">92</b>%<input id="q" type="range" min="50" max="100" value="92"></label>
+        <p class="note" id="fnote"></p>
+        <button class="pri" id="save">Simpan</button>
+      </div>
+    </div>
+  </section>
+<section id="vs" class="hide" style="display:grid;gap:16px">
+  <label id="vdrop"><b>Pilih file SVG atau EPS</b><span>Aplikasi menganalisa desain, mendeteksi tiap ikon, lalu memisahkannya</span><input id="vfile" type="file" accept=".svg,.eps,.ps,image/svg+xml,application/postscript" hidden></label>
+  <div id="vws" class="hide" style="display:grid;gap:14px">
+    <div class="card"><div id="vstage"></div><div id="vinfo"></div></div>
+    <div class="card" style="display:grid;gap:12px">
+      <div class="row" id="vpre"></div>
+      <div class="row">
+        <label class="f">Baris<input id="vrows" type="number" min="1" max="40" value="3" inputmode="numeric"></label>
+        <label class="f">Kolom<input id="vcols" type="number" min="1" max="40" value="3" inputmode="numeric"></label>
+      </div>
+      <label class="f">Ruang di sekitar ikon: <b id="vpv">10</b>%<input id="vpad" type="range" min="0" max="40" value="10"></label>
+      <label class="chk"><input id="vrb" type="checkbox" checked> Abaikan elemen latar yang besar</label>
+      <div class="row"><button id="vall" class="chip">Pilih semua / kosongkan</button><button id="vauto" class="chip">Deteksi grid otomatis</button></div>
+    </div>
+    
+<div class="card" style="display:grid;gap:12px">
+      <div class="row sp"><b>Warna pada desain</b><span class="note" id="vcn"></span></div>
+      <div class="sw" id="vcl"></div>
+      <div class="row sp"><b>Warna dihapus</b><button id="vcr" class="chip">Kembalikan semua</button></div>
+      <div class="sw" id="vcx"></div>
+      <p class="note">Ketuk warna untuk memindahkannya antar daftar. Warna yang dihapus hilang dari pratinjau dan hasil simpan, termasuk warna latar. Posisi ikon di tengah kotak dihitung ulang otomatis.</p>
+    </div>
+    
+<div class="row bar"><button class="pri" id="vsplit">Pisahkan ikon terpilih</button><button id="vagain">Ganti file</button></div>
+    <div id="vout" class="hide" style="display:grid;gap:16px">
+      <div class="card" style="display:grid;gap:12px">
+        <div class="row sp"><b id="vcnt"></b><button id="vsel" class="chip">Pilih semua / kosongkan</button></div>
+        <div class="grid" id="vres"></div>
+        <label class="f" style="min-width:0">Daftar nama file (satu nama per baris, urut sesuai nomor ikon)<textarea id="vnames" rows="5" placeholder="home&#10;search&#10;settings"></textarea></label>
+        <div class="row"><button id="vnpaste" class="chip">Tempel dari clipboard</button><button id="vnclear" class="chip">Reset nama</button></div>
+        <p class="note" id="vnstat"></p>
+      </div>
+      <div class="card" style="display:grid;gap:12px">
+        <b>Simpan</b>
+        <div class="row" id="vf"></div>
+        <label class="f hide" id="vszw">Sisi terpanjang PNG dan JPG (px)<select id="vsz"><option>512</option><option selected>1024</option><option>2048</option></select></label>
+        <label class="chk"><input id="vms" type="checkbox" checked> Mode microstock (SVG bersih, artboard persegi seragam)</label>
+        <label class="f" id="vszm">Ukuran artboard SVG dan EPS (px)<select id="vsize"><option>1000</option><option selected>2000</option><option>3000</option></select></label>
+        <p class="note" id="vnote"></p>
+        <button class="pri" id="vsave">Simpan</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+<div id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const cv=$('#cv'),cx=cv.getContext('2d');
+let img,src,sctx,pd,bg,bgT,mode='grid',auto=null,crop,res=[],fmt='png',scale=1,dpr=1,drag=null,base='gambar';
+const G={rows:3,cols:3,margin:0,gap:0};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),2600)}
+
+/* ---------- impor ---------- */
+$('#file').onchange=e=>load(e.target.files[0]);
+['dragover','dragenter'].forEach(n=>addEventListener(n,e=>{e.preventDefault();$('#drop').classList.add('over')}));
+['dragleave','drop'].forEach(n=>addEventListener(n,e=>{e.preventDefault();$('#drop').classList.remove('over')}));
+addEventListener('drop',e=>{const f=e.dataTransfer.files[0];app==='v'?vload(f):load(f)});
+$('#again').onclick=()=>{$('#file').value='';$('#file').click()};
+function load(f){
+  if(!f)return;
+  if(!/^image\/(png|jpeg)$/.test(f.type)){toast('Format harus JPG atau PNG');return}
+  base=f.name.replace(/\.[^.]+$/,'')||'gambar';
+  const u=URL.createObjectURL(f),im=new Image();
+  im.onload=()=>{
+    img=im;src=document.createElement('canvas');src.width=im.naturalWidth;src.height=im.naturalHeight;
+    sctx=src.getContext('2d',{willReadFrequently:true});sctx.drawImage(im,0,0);
+    pd=sctx.getImageData(0,0,src.width,src.height).data;URL.revokeObjectURL(u);init();
+  };
+  im.onerror=()=>toast('Gambar tidak bisa dibuka');
+  im.src=u;
+}
+function init(){
+  const W=src.width,H=src.height,m=Math.min(W,H);
+  $('#drop').classList.add('hide');$('#ws').classList.remove('hide');
+  $('#margin').max=Math.floor(m/4);$('#gap').max=Math.floor(m/10);
+  G.margin=0;G.gap=0;syncInputs();
+  crop={x:W*.1,y:H*.1,w:W*.8,h:H*.8};
+  res=[];renderRes();auto=null;setBg();
+  const ok=detect();
+  setMode('grid');
+  $('#info').textContent=`${W} × ${H} px. `+(ok?`Terdeteksi otomatis ${G.cols} × ${G.rows} ikon. Ubah grid bila kurang tepat.`:'Grid tidak terdeteksi otomatis. Pilih ukuran grid secara manual.');
+  syncInputs();fit();
+}
+
+/* ---------- analisa ---------- */
+function setBg(){
+  const W=src.width,H=src.height,P=(x,y)=>{const i=(y*W+x)*4;return[pd[i],pd[i+1],pd[i+2],pd[i+3]]};
+  const cs=[P(0,0),P(W-1,0),P(0,H-1),P(W-1,H-1)];
+  bgT=cs.reduce((s,c)=>s+c[3],0)/4<25;
+  bg=[0,1,2].map(k=>cs.reduce((s,c)=>s+c[k],0)/4);
+}
+function fg(i){
+  if(pd[i+3]<25)return false;
+  if(bgT)return true;
+  return Math.abs(pd[i]-bg[0])+Math.abs(pd[i+1]-bg[1])+Math.abs(pd[i+2]-bg[2])>60;
+}
+function segs(p,n,other){
+  const th=Math.max(1,other*.004),mg=Math.max(2,n*.006),mn=n*.012,r=[];let s=-1;
+  for(let i=0;i<=n;i++){const on=i<n&&p[i]>th;if(on&&s<0)s=i;if(!on&&s>=0){r.push([s,i]);s=-1}}
+  const m=[];
+  for(const q of r){const l=m[m.length-1];if(l&&q[0]-l[1]<mg)l[1]=q[1];else m.push(q.slice())}
+  return m.filter(q=>q[1]-q[0]>=mn);
+}
+function detect(){
+  const W=src.width,H=src.height,cp=new Uint32Array(W),rp=new Uint32Array(H);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(fg((y*W+x)*4)){cp[x]++;rp[y]++}
+  const C=segs(cp,W,H),R=segs(rp,H,W);
+  if(!C.length||!R.length||C.length*R.length<2||C.length>30||R.length>30)return false;
+  const p=Math.round(Math.min(W,H)*.005);auto=[];
+  R.forEach(r=>C.forEach(c=>{
+    const x=Math.max(0,c[0]-p),y=Math.max(0,r[0]-p);
+    auto.push({x,y,w:Math.min(W,c[1]+p)-x,h:Math.min(H,r[1]+p)-y});
+  }));
+  G.rows=R.length;G.cols=C.length;return true;
+}
+function bbox(x,y,w,h){
+  const W=src.width;let a=1e9,b=1e9,c=-1,d=-1;
+  for(let j=y;j<y+h;j++)for(let i=x;i<x+w;i++)if(fg((j*W+i)*4)){if(i<a)a=i;if(i>c)c=i;if(j<b)b=j;if(j>d)d=j}
+  return c<0?null:[a,b,c,d];
+}
+
+/* ---------- sel ---------- */
+function cells(){
+  if(mode==='crop')return[{...crop}];
+  if(auto)return auto;
+  const W=src.width,H=src.height,m=G.margin,g=G.gap,
+    cw=(W-2*m-g*(G.cols-1))/G.cols,ch=(H-2*m-g*(G.rows-1))/G.rows,a=[];
+  for(let r=0;r<G.rows;r++)for(let c=0;c<G.cols;c++)a.push({x:m+c*(cw+g),y:m+r*(ch+g),w:cw,h:ch});
+  return a;
+}
+
+/* ---------- tampilan ---------- */
+function fit(){
+  if(!img)return;
+  const box=$('#stage'),W=src.width,H=src.height,mw=box.clientWidth-16,mh=innerHeight*.55,
+    s=Math.min(mw/W,mh/H);
+  dpr=Math.min(devicePixelRatio||1,2);
+  cv.style.width=W*s+'px';cv.style.height=H*s+'px';
+  cv.width=Math.round(W*s*dpr);cv.height=Math.round(H*s*dpr);
+  scale=cv.width/W;draw();
+}
+addEventListener('resize',fit);
+function draw(){
+  if(!img)return;
+  cx.clearRect(0,0,cv.width,cv.height);
+  cx.drawImage(img,0,0,cv.width,cv.height);
+  const s=scale,lw=2*dpr,col='#14c9b3';
+  if(mode==='grid'){
+    cx.lineWidth=lw;cx.strokeStyle=col;cx.fillStyle='rgba(20,201,179,.14)';
+    cx.font=`${12*dpr}px system-ui`;
+    cells().forEach((c,i)=>{
+      cx.fillRect(c.x*s,c.y*s,c.w*s,c.h*s);cx.strokeRect(c.x*s,c.y*s,c.w*s,c.h*s);
+      cx.fillStyle='#fff';cx.strokeStyle='#000';cx.lineWidth=3*dpr;
+      cx.strokeText(i+1,c.x*s+4*dpr,c.y*s+14*dpr);cx.fillText(i+1,c.x*s+4*dpr,c.y*s+14*dpr);
+      cx.fillStyle='rgba(20,201,179,.14)';cx.strokeStyle=col;cx.lineWidth=lw;
+    });
+  }else{
+    const c=crop,W=cv.width,H=cv.height;
+    cx.fillStyle='rgba(0,0,0,.55)';
+    cx.fillRect(0,0,W,c.y*s);cx.fillRect(0,(c.y+c.h)*s,W,H-(c.y+c.h)*s);
+    cx.fillRect(0,c.y*s,c.x*s,c.h*s);cx.fillRect((c.x+c.w)*s,c.y*s,W-(c.x+c.w)*s,c.h*s);
+    cx.strokeStyle=col;cx.lineWidth=lw;cx.strokeRect(c.x*s,c.y*s,c.w*s,c.h*s);
+    cx.fillStyle=col;const h=7*dpr;
+    [[c.x,c.y],[c.x+c.w,c.y],[c.x,c.y+c.h],[c.x+c.w,c.y+c.h]].forEach(p=>cx.fillRect(p[0]*s-h,p[1]*s-h,h*2,h*2));
+  }
+}
+
+/* ---------- potong bebas: interaksi ---------- */
+function pt(e){const r=cv.getBoundingClientRect();return[(e.clientX-r.left)*cv.width/r.width/scale,(e.clientY-r.top)*cv.height/r.height/scale]}
+function hit(px,py){
+  const t=24*dpr/scale,c=crop,
+    l=Math.abs(px-c.x)<t,r=Math.abs(px-c.x-c.w)<t,tp=Math.abs(py-c.y)<t,b=Math.abs(py-c.y-c.h)<t;
+  if(!(px>c.x-t&&px<c.x+c.w+t&&py>c.y-t&&py<c.y+c.h+t))return null;
+  return(l||r||tp||b)?{l,r,t:tp,b}:{move:true};
+}
+cv.onpointerdown=e=>{
+  if(mode!=='crop')return;
+  const[p,q]=pt(e),h=hit(p,q);if(!h)return;
+  drag={h,p,q,c:{...crop}};cv.setPointerCapture(e.pointerId);
+};
+cv.onpointermove=e=>{
+  if(!drag)return;
+  const[p,q]=pt(e),dx=p-drag.p,dy=q-drag.q,c=drag.c,W=src.width,H=src.height,m=16,h=drag.h;
+  let x0=c.x,y0=c.y,x1=c.x+c.w,y1=c.y+c.h;
+  if(h.move){x0=clamp(c.x+dx,0,W-c.w);y0=clamp(c.y+dy,0,H-c.h);x1=x0+c.w;y1=y0+c.h}
+  else{
+    if(h.l)x0=clamp(c.x+dx,0,x1-m);
+    if(h.r)x1=clamp(c.x+c.w+dx,x0+m,W);
+    if(h.t)y0=clamp(c.y+dy,0,y1-m);
+    if(h.b)y1=clamp(c.y+c.h+dy,y0+m,H);
+  }
+  crop={x:x0,y:y0,w:x1-x0,h:y1-y0};draw();cropInfo();
+};
+cv.onpointerup=cv.onpointercancel=()=>{drag=null};
+function cropInfo(){$('#info').textContent=`Area potong: ${Math.round(crop.w)} × ${Math.round(crop.h)} px`}
+
+/* ---------- kontrol ---------- */
+function setMode(m){
+  mode=m;$('#tg').classList.toggle('on',m==='grid');$('#tc').classList.toggle('on',m==='crop');
+  $('#pgrid').classList.toggle('hide',m!=='grid');$('#pcrop').classList.toggle('hide',m!=='crop');
+  $('#run').textContent=m==='grid'?'Pisahkan jadi ikon':'Potong gambar';
+  if(m==='crop')cropInfo();draw();
+}
+$('#tg').onclick=()=>setMode('grid');
+$('#tc').onclick=()=>setMode('crop');
+[2,3,4,5].forEach(n=>{
+  const b=document.createElement('button');b.className='chip';b.textContent=`${n} × ${n}`;b.dataset.n=n;
+  b.onclick=()=>{G.rows=G.cols=n;G.margin=G.gap=0;auto=null;syncInputs();draw()};
+  $('#presets').appendChild(b);
+});
+function syncInputs(){
+  $('#rows').value=G.rows;$('#cols').value=G.cols;
+  $('#margin').value=G.margin;$('#gap').value=G.gap;
+  $('#mv').textContent=G.margin;$('#gv').textContent=G.gap;
+  document.querySelectorAll('#presets .chip').forEach(b=>b.classList.toggle('on',!auto&&G.rows==b.dataset.n&&G.cols==b.dataset.n));
+}
+function readInputs(){
+  G.rows=clamp(parseInt($('#rows').value)||1,1,30);G.cols=clamp(parseInt($('#cols').value)||1,1,30);
+  G.margin=+$('#margin').value;G.gap=+$('#gap').value;auto=null;syncInputs();draw();
+}
+['rows','cols','margin','gap'].forEach(i=>$('#'+i).oninput=readInputs);
+$('#pad').oninput=()=>{$('#pv').textContent=$('#pad').value};
+
+/* ---------- proses ---------- */
+$('#run').onclick=()=>{
+  const trim=$('#trim').checked&&mode==='grid',pad=+$('#pad').value,W=src.width,H=src.height;
+  res=[];
+  for(const c of cells()){
+    let x=Math.round(c.x),y=Math.round(c.y),w=Math.round(c.w),h=Math.round(c.h);
+    if(w<1||h<1)continue;
+    if(trim){
+      const b=bbox(x,y,w,h);if(!b)continue;
+      const x0=Math.max(x,b[0]-pad),y0=Math.max(y,b[1]-pad),x1=Math.min(x+w,b[2]+1+pad),y1=Math.min(y+h,b[3]+1+pad);
+      x=x0;y=y0;w=x1-x0;h=y1-y0;
+    }
+    x=clamp(x,0,W-1);y=clamp(y,0,H-1);w=Math.min(w,W-x);h=Math.min(h,H-y);
+    const k=document.createElement('canvas');k.width=w;k.height=h;
+    k.getContext('2d').drawImage(src,x,y,w,h,0,0,w,h);
+    res.push({c:k,on:true});
+  }
+  renderRes();
+  if(!res.length)toast('Tidak ada ikon yang ditemukan. Matikan opsi pangkas atau ubah grid.');
+  else $('#out').scrollIntoView({behavior:'smooth',block:'start'});
+};
+let view='orig';
+function renderRes(){
+  const box=$('#res');box.innerHTML='';
+  $('#out').classList.toggle('hide',!res.length);
+  res.forEach((r,i)=>{
+    const d=document.createElement('div');d.className='th'+(r.on?'':' off');
+    const n=document.createElement('i');n.textContent=i+1;
+    if(view==='vec'&&r.v){const im=new Image();im.src=r.url||(r.url=URL.createObjectURL(new Blob([svgOf(r.v)],{type:'image/svg+xml'})));d.append(im)}else d.append(r.c);
+    d.append(n);
+    if(r.v){const e=document.createElement('em');e.textContent='VEKTOR';d.append(e)}
+    d.onclick=()=>{r.on=!r.on;d.classList.toggle('off',!r.on);count()};
+    box.appendChild(d);
+  });
+  count();
+}
+function count(){
+  const n=res.filter(r=>r.on).length,v=res.filter(r=>r.v).length;
+  $('#cnt').textContent=`${n} dari ${res.length} dipilih`+(v?`, ${v} vektor`:'');
+  $('#save').textContent=n>1?`Simpan ${n} file (ZIP)`:'Simpan';
+}
+function syncView(){$('#vA').classList.toggle('on',view==='orig');$('#vV').classList.toggle('on',view==='vec')}
+$('#vA').onclick=()=>{view='orig';syncView();renderRes()};
+$('#vV').onclick=()=>{view='vec';syncView();renderRes()};
+$('#all').onclick=()=>{const v=!res.every(r=>r.on);res.forEach(r=>r.on=v);renderRes()};
+
+/* ---------- format ---------- */
+const NOTES={png:'PNG menjaga transparansi.',jpg:'JPG tidak mendukung transparansi. Area transparan diisi putih.',svg:'SVG vektor. Ikon yang belum dikonversi akan dikonversi otomatis dengan tingkat detail terpilih.',eps:'EPS vektor tanpa latar. Ikon yang belum dikonversi akan dikonversi otomatis.'};
+[['png','PNG'],['jpg','JPG'],['svg','SVG'],['eps','EPS']].forEach(([k,t])=>{
+  const b=document.createElement('button');b.className='chip'+(k===fmt?' on':'');b.textContent=t;
+  b.onclick=()=>{fmt=k;document.querySelectorAll('#fmts .chip').forEach(x=>x.classList.toggle('on',x===b));$('#qw').classList.toggle('hide',k!=='jpg');$('#fnote').textContent=NOTES[k]};
+  $('#fmts').appendChild(b);
+});
+$('#fnote').textContent=NOTES.png;
+$('#q').oninput=()=>{$('#qv').textContent=$('#q').value};
+function flat(c){
+  const f=document.createElement('canvas');f.width=c.width;f.height=c.height;
+  const g=f.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,f.width,f.height);g.drawImage(c,0,0);return f;
+}
+
+/* ---------- vektorisasi: kuantisasi warna + kontur sub-piksel + kurva Bezier ---------- */
+const VP=[['Sederhana',6,.9,2],['Seimbang',12,.6,1],['Detail',24,.45,1],['Maksimal',32,.3,1]];let vi=2;
+VP.forEach((p,i)=>{
+  const b=document.createElement('button');b.className='chip'+(i===vi?' on':'');b.textContent=p[0];
+  b.onclick=()=>{vi=i;document.querySelectorAll('#vp .chip').forEach((x,j)=>x.classList.toggle('on',j===i))};
+  $('#vp').appendChild(b);
+});
+const VO=()=>({k:VP[vi][1],e:VP[vi][2],sm:VP[vi][3],rm:$('#rmbg').checked});
+function blur(F,W,H){
+  const t=new Float32Array(F.length);
+  for(let y=0;y<H;y++)for(let x=1;x<W-1;x++){const i=y*W+x;t[i]=(F[i-1]+F[i]+F[i+1])/3}
+  for(let y=1;y<H-1;y++)for(let x=0;x<W;x++){const i=y*W+x;F[i]=(t[i-W]+t[i]+t[i+W])/3}
+}
+function dp(P,e){
+  const keep=new Uint8Array(P.length),st=[[0,P.length-1]];keep[0]=keep[P.length-1]=1;
+  while(st.length){
+    const[a,b]=st.pop(),ax=P[a][0],ay=P[a][1],dx=P[b][0]-ax,dy=P[b][1]-ay,L=Math.hypot(dx,dy)||1e-9;let md=0,mi=-1;
+    for(let i=a+1;i<b;i++){const d=Math.abs((P[i][0]-ax)*dy-(P[i][1]-ay)*dx)/L;if(d>md){md=d;mi=i}}
+    if(md>e){keep[mi]=1;st.push([a,mi],[mi,b])}
+  }
+  return P.filter((_,i)=>keep[i]);
+}
+function dpClosed(P,e){
+  let m=0,md=0;
+  for(let i=1;i<P.length;i++){const d=(P[i][0]-P[0][0])**2+(P[i][1]-P[0][1])**2;if(d>md){md=d;m=i}}
+  return dp(P.slice(0,m+1),e).concat(dp(P.slice(m).concat([P[0]]),e).slice(1,-1));
+}
+function bez(Q,P,up){
+  const n=Q.length,A=Q.map(p=>[(p[0]-P+.5)/up,(p[1]-P+.5)/up]),r=v=>Math.round(v*100)/100,
+    u=(a,b)=>{const x=b[0]-a[0],y=b[1]-a[1],l=Math.hypot(x,y)||1;return[x/l,y/l]};
+  const cor=A.map((p,i)=>{const a=u(A[(i+n-1)%n],p),b=u(p,A[(i+1)%n]);return a[0]*b[0]+a[1]*b[1]<.78});
+  const o=[r(A[0][0]),r(A[0][1])];
+  for(let i=0;i<n;i++){
+    const p0=A[(i+n-1)%n],p1=A[i],p2=A[(i+1)%n],p3=A[(i+2)%n],k=Math.hypot(p2[0]-p1[0],p2[1]-p1[1])/3,
+      t1=cor[i]?u(p1,p2):u(p0,p2),t2=cor[(i+1)%n]?u(p1,p2):u(p1,p3);
+    o.push(r(p1[0]+t1[0]*k),r(p1[1]+t1[1]*k),r(p2[0]-t2[0]*k),r(p2[1]-t2[1]*k),r(p2[0]),r(p2[1]));
+  }
+  return o;
+}
+function trace(F,W,H,P,eps,minA,up){
+  const nx=new Map(),link=(a,b)=>{let A=nx.get(a);if(!A)nx.set(a,A=[]);A.push(b);let B=nx.get(b);if(!B)nx.set(b,B=[]);B.push(a)};
+  for(let y=0;y<H-1;y++)for(let x=0;x<W-1;x++){
+    const i=y*W+x,v0=F[i],v1=F[i+1],v2=F[i+W+1],v3=F[i+W],
+      m=(v0>=.5?1:0)|(v1>=.5?2:0)|(v2>=.5?4:0)|(v3>=.5?8:0);
+    if(m===0||m===15)continue;
+    const T=i*2,B=(i+W)*2,L=i*2+1,R=(i+1)*2+1,ce=(v0+v1+v2+v3)/4>=.5;
+    switch(m){
+      case 1:case 14:link(L,T);break;case 2:case 13:link(T,R);break;case 3:case 12:link(L,R);break;
+      case 4:case 11:link(R,B);break;case 6:case 9:link(T,B);break;case 7:case 8:link(L,B);break;
+      case 5:if(ce){link(T,R);link(L,B)}else{link(L,T);link(R,B)}break;
+      case 10:if(ce){link(L,T);link(R,B)}else{link(T,R);link(L,B)}
+    }
+  }
+  const pos=id=>{const n=id>>1,x=n%W,y=(n-x)/W;
+    if(id&1){const a=F[n],b=F[n+W];return[x,y+(.5-a)/(b-a)]}
+    const a=F[n],b=F[n+1];return[x+(.5-a)/(b-a),y]};
+  const seen=new Set(),out=[];
+  for(const s of nx.keys()){
+    if(seen.has(s))continue;
+    const pts=[];let prev=-1,cur=s;
+    while(cur!==undefined&&!seen.has(cur)){seen.add(cur);pts.push(pos(cur));const n=nx.get(cur),nt=n[0]===prev?n[1]:n[0];prev=cur;cur=nt}
+    if(pts.length<4)continue;
+    let ar=0;for(let i=0;i<pts.length;i++){const a=pts[i],b=pts[(i+1)%pts.length];ar+=a[0]*b[1]-b[0]*a[1]}
+    if(Math.abs(ar)/2<minA)continue;
+    const Q=dpClosed(pts,eps);if(Q.length>=3)out.push(bez(Q,P,up));
+  }
+  return out;
+}
+function vectorize(c,o){
+  const L0=Math.max(c.width,c.height),up=L0<400?2:L0>1000?1000/L0:1,
+    W=Math.max(1,Math.round(c.width*up)),H=Math.max(1,Math.round(c.height*up)),P=3,PW=W+2*P,PH=H+2*P;
+  const wc=document.createElement('canvas');wc.width=W;wc.height=H;
+  const g=wc.getContext('2d',{willReadFrequently:true});g.imageSmoothingQuality='high';g.drawImage(c,0,0,W,H);
+  const d=g.getImageData(0,0,W,H).data,N=W*H,w=new Float32Array(N),sA=new Float32Array(N),rm=o.rm&&!bgT;
+  for(let i=0;i<N;i++){
+    const j=i*4;let s=1;
+    if(rm)s=clamp((Math.abs(d[j]-bg[0])+Math.abs(d[j+1]-bg[1])+Math.abs(d[j+2]-bg[2])-30)/90,0,1);
+    sA[i]=s;w[i]=d[j+3]/255*s;
+  }
+  const SC=[],st=Math.max(1,Math.floor(N/20000));
+  for(let i=0;i<N;i+=st)if(w[i]>=.9)SC.push([d[i*4],d[i*4+1],d[i*4+2]]);
+  if(!SC.length)return{w:c.width,h:c.height,layers:[]};
+  const ds=(p,q)=>(p[0]-q[0])**2+(p[1]-q[1])**2+(p[2]-q[2])**2,K=Math.min(o.k,SC.length),cen=[SC[0]],mn=SC.map(p=>ds(p,SC[0]));
+  while(cen.length<K){
+    let bi=0;for(let t=1;t<SC.length;t++)if(mn[t]>mn[bi])bi=t;
+    if(mn[bi]<30)break;
+    const nc=SC[bi];cen.push(nc);SC.forEach((p,t)=>{const e=ds(p,nc);if(e<mn[t])mn[t]=e});
+  }
+  for(let it=0;it<8;it++){
+    const sm=cen.map(()=>[0,0,0,0]);
+    SC.forEach(p=>{let b=0,bd=1e9;cen.forEach((q,k)=>{const e=ds(p,q);if(e<bd){bd=e;b=k}});const m=sm[b];m[0]+=p[0];m[1]+=p[1];m[2]+=p[2];m[3]++});
+    sm.forEach((m,k)=>{if(m[3])cen[k]=[m[0]/m[3],m[1]/m[3],m[2]/m[3]]});
+  }
+  const cl=new Int16Array(N).fill(-1),cnt=new Float64Array(cen.length),nk=cen.length;
+  for(let i=0;i<N;i++){
+    if(w[i]<.02)continue;
+    let r=d[i*4],gg=d[i*4+1],b=d[i*4+2];const s=sA[i];
+    if(rm&&s<.95&&s>.05){r=clamp((r-(1-s)*bg[0])/s,0,255);gg=clamp((gg-(1-s)*bg[1])/s,0,255);b=clamp((b-(1-s)*bg[2])/s,0,255)}
+    let bk=0,bd=1e9;
+    for(let k=0;k<nk;k++){const q=cen[k],e=(r-q[0])**2+(gg-q[1])**2+(b-q[2])**2;if(e<bd){bd=e;bk=k}}
+    cl[i]=bk;cnt[bk]+=w[i];
+  }
+  const ord=cen.map((_,k)=>k).filter(k=>cnt[k]>0).sort((a,b)=>cnt[b]-cnt[a]),rk=new Int16Array(nk).fill(-1);
+  ord.forEach((k,r)=>{rk[k]=r});
+  const minA=Math.max(4*up*up,N*2e-5),layers=[],F=new Float32Array(PW*PH);
+  for(let r=0;r<ord.length;r++){
+    F.fill(0);let area=0;
+    for(let y=0;y<H;y++)for(let x=0,i=y*W,f=(y+P)*PW+P;x<W;x++,i++,f++){const k=cl[i];if(k>=0&&rk[k]>=r){F[f]=w[i];area+=w[i]}}
+    if(area<minA)break;
+    for(let q=0;q<o.sm;q++)blur(F,PW,PH);
+    const p=trace(F,PW,PH,P,o.e,minA/4,up);
+    if(p.length)layers.push({c:cen[ord[r]].map(Math.round),p});
+  }
+  return{w:c.width,h:c.height,layers};
+}
+const hex=c=>'#'+c.map(v=>v.toString(16).padStart(2,'0')).join('');
+function svgOf(v){
+  const L=v.layers.map(l=>`<path fill="${hex(l.c)}" fill-rule="evenodd" d="${l.p.map(s=>{let t=`M${s[0]} ${s[1]}`;for(let i=2;i<s.length;i+=6)t+=`C${s[i]} ${s[i+1]} ${s[i+2]} ${s[i+3]} ${s[i+4]} ${s[i+5]}`;return t+'Z'}).join('')}"/>`).join('\n');
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${v.w}" height="${v.h}" viewBox="0 0 ${v.w} ${v.h}">\n${L}\n</svg>`;
+}
+function epsOf(v){
+  let t=`%!PS-Adobe-3.0 EPSF-3.0\n%%BoundingBox: 0 0 ${Math.ceil(v.w)} ${Math.ceil(v.h)}\n%%HiResBoundingBox: 0 0 ${v.w} ${v.h}\n%%EndComments\ngsave\n0 ${v.h} translate 1 -1 scale\n`;
+  v.layers.forEach(l=>{
+    t+=`${l.c.map(x=>(x/255).toFixed(4)).join(' ')} setrgbcolor\nnewpath\n`;
+    l.p.forEach(s=>{t+=`${s[0]} ${s[1]} moveto\n`;for(let i=2;i<s.length;i+=6)t+=`${s[i]} ${s[i+1]} ${s[i+2]} ${s[i+3]} ${s[i+4]} ${s[i+5]} curveto\n`;t+='closepath\n'});
+    t+='eofill\n';
+  });
+  return t+'grestore\nshowpage\n%%EOF\n';
+}
+const tick=()=>new Promise(r=>setTimeout(r,20));
+$('#vgo').onclick=async()=>{
+  const sel=res.filter(r=>r.on);if(!sel.length)return toast('Pilih minimal satu ikon');
+  const b=$('#vgo'),old=b.textContent;b.disabled=true;
+  try{
+    for(let i=0;i<sel.length;i++){b.textContent=`Mengonversi ${i+1} dari ${sel.length}...`;await tick();sel[i].v=vectorize(sel[i].c,VO());sel[i].url=null}
+    view='vec';syncView();renderRes();toast(`${sel.length} ikon dikonversi ke vektor`);
+  }catch(e){toast('Konversi gagal: '+e.message)}
+  b.disabled=false;b.textContent=old;
+};
+async function blobOf(r){
+  if(fmt==='png')return new Promise(ok=>r.c.toBlob(ok,'image/png'));
+  if(fmt==='jpg')return new Promise(ok=>flat(r.c).toBlob(ok,'image/jpeg',+$('#q').value/100));
+  if(!r.v){await tick();r.v=vectorize(r.c,VO())}
+  return new Blob([fmt==='svg'?svgOf(r.v):epsOf(r.v)],{type:fmt==='svg'?'image/svg+xml':'application/postscript'});
+}
+
+/* ---------- ZIP (tanpa kompresi) ---------- */
+const CT=(()=>{const t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+function crc(u){let c=-1;for(let i=0;i<u.length;i++)c=CT[(c^u[i])&255]^(c>>>8);return(c^-1)>>>0}
+function zip(files){
+  const enc=new TextEncoder(),parts=[],cen=[];let off=0;
+  for(const f of files){
+    const nm=enc.encode(f.name),cr=crc(f.data),sz=f.data.length;
+    const h=new DataView(new ArrayBuffer(30));
+    h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(6,0x0800,true);h.setUint16(12,0x21,true);
+    h.setUint32(14,cr,true);h.setUint32(18,sz,true);h.setUint32(22,sz,true);h.setUint16(26,nm.length,true);
+    parts.push(h,nm,f.data);
+    const e=new DataView(new ArrayBuffer(46));
+    e.setUint32(0,0x02014b50,true);e.setUint16(4,20,true);e.setUint16(6,20,true);e.setUint16(8,0x0800,true);e.setUint16(14,0x21,true);
+    e.setUint32(16,cr,true);e.setUint32(20,sz,true);e.setUint32(24,sz,true);e.setUint16(28,nm.length,true);e.setUint32(42,off,true);
+    cen.push(e,nm);
+    off+=30+nm.length+sz;
+  }
+  const cs=cen.reduce((s,p)=>s+(p.byteLength??p.length),0),end=new DataView(new ArrayBuffer(22));
+  end.setUint32(0,0x06054b50,true);end.setUint16(8,files.length,true);end.setUint16(10,files.length,true);
+  end.setUint32(12,cs,true);end.setUint32(16,off,true);
+  return new Blob([...parts,...cen,end],{type:'application/zip'});
+}
+function dl(b,n){
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+}
+$('#save').onclick=async()=>{
+  const sel=res.map((r,i)=>[r,i]).filter(([r])=>r.on);
+  if(!sel.length)return toast('Pilih minimal satu ikon');
+  const btn=$('#save'),old=btn.textContent;btn.disabled=true;
+  try{
+    const files=[];let n=0;
+    for(const[r,i]of sel){
+      btn.textContent=`Memproses ${++n} dari ${sel.length}...`;
+      files.push({name:`${base}_${String(i+1).padStart(2,'0')}.${fmt}`,blob:await blobOf(r)});
+    }
+    if(files.length===1)dl(files[0].blob,files[0].name);
+    else{
+      for(const f of files)f.data=new Uint8Array(await f.blob.arrayBuffer());
+      dl(zip(files),`${base}_${fmt}.zip`);
+    }
+    toast('Selesai disimpan');
+  }catch(e){toast('Gagal menyimpan: '+e.message)}
+  btn.disabled=false;btn.textContent=old;count();
+};
+
+/* ====== MODE APLIKASI ====== */
+let app='b';
+function setApp(m){
+  app=m;$('#aB').classList.toggle('on',m==='b');$('#aV').classList.toggle('on',m==='v');
+  $('#drop').classList.toggle('hide',m!=='b'||!!img);$('#ws').classList.toggle('hide',m!=='b'||!img);$('#vs').classList.toggle('hide',m!=='v');
+}
+$('#aB').onclick=()=>setApp('b');$('#aV').onclick=()=>setApp('v');
+
+/* ====== PARSER PATH SVG -> KURVA BEZIER ====== */
+function arcC(x1,y1,rx,ry,ph,fa,fs,x2,y2){
+  if(!rx||!ry||(x1===x2&&y1===y2))return[[x1,y1,x2,y2,x2,y2]];
+  rx=Math.abs(rx);ry=Math.abs(ry);
+  const p=ph*Math.PI/180,co=Math.cos(p),si=Math.sin(p),dx=(x1-x2)/2,dy=(y1-y2)/2,xp=co*dx+si*dy,yp=-si*dx+co*dy,l=xp*xp/(rx*rx)+yp*yp/(ry*ry);
+  if(l>1){const s=Math.sqrt(l);rx*=s;ry*=s}
+  const nu=rx*rx*ry*ry-rx*rx*yp*yp-ry*ry*xp*xp,de=rx*rx*yp*yp+ry*ry*xp*xp,k=(fa===fs?-1:1)*Math.sqrt(Math.max(0,nu/de)),
+    cxp=k*rx*yp/ry,cyp=-k*ry*xp/rx,cx=co*cxp-si*cyp+(x1+x2)/2,cy=si*cxp+co*cyp+(y1+y2)/2,
+    ang=(ux,uy,vx,vy)=>Math.atan2(ux*vy-uy*vx,ux*vx+uy*vy),t1=ang(1,0,(xp-cxp)/rx,(yp-cyp)/ry);
+  let dt=ang((xp-cxp)/rx,(yp-cyp)/ry,(-xp-cxp)/rx,(-yp-cyp)/ry);
+  if(!fs&&dt>0)dt-=2*Math.PI;else if(fs&&dt<0)dt+=2*Math.PI;
+  const n=Math.max(1,Math.ceil(Math.abs(dt)/(Math.PI/2)-1e-9)),dd=dt/n,t=4/3*Math.tan(dd/4),out=[],
+    pt=a=>[cx+rx*Math.cos(a)*co-ry*Math.sin(a)*si,cy+rx*Math.cos(a)*si+ry*Math.sin(a)*co],
+    dv=a=>[-rx*Math.sin(a)*co-ry*Math.cos(a)*si,-rx*Math.sin(a)*si+ry*Math.cos(a)*co];
+  for(let i=0;i<n;i++){
+    const a=t1+i*dd,b=a+dd,p0=pt(a),p1=pt(b),d0=dv(a),d1=dv(b);
+    out.push([p0[0]+t*d0[0],p0[1]+t*d0[1],p1[0]-t*d1[0],p1[1]-t*d1[1],p1[0],p1[1]]);
+  }
+  out[n-1][4]=x2;out[n-1][5]=y2;return out;
+}
+function parseD(d){
+  const re=/[-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?/iy,subs=[];
+  let i=0,cmd='',x=0,y=0,sx=0,sy=0,lc=null,lq=null,pc='',cur=null;
+  const sk=()=>{while(i<d.length&&/[\s,]/.test(d[i]))i++},
+    N=()=>{sk();re.lastIndex=i;const m=re.exec(d);if(!m)throw 0;i+=m[0].length;return+m[0]},
+    Fl=()=>{sk();return d[i++]==='1'?1:0},
+    ln=(a,b)=>cur.s.push([x+(a-x)/3,y+(b-y)/3,x+2*(a-x)/3,y+2*(b-y)/3,a,b]);
+  try{
+    while(true){
+      sk();if(i>=d.length)break;
+      const ch=d[i];
+      if(/[a-zA-Z]/.test(ch)){cmd=ch;i++}else if(!cmd)break;
+      const C=cmd.toUpperCase(),r=cmd!==C,ox=r?x:0,oy=r?y:0;
+      if(C==='Z'){if(cur&&!cur.z){if(x!==sx||y!==sy)ln(sx,sy);cur.z=1}x=sx;y=sy;pc='Z';continue}
+      if(C==='M'){x=ox+N();y=oy+N();sx=x;sy=y;cur={p:[x,y],s:[]};subs.push(cur);cmd=r?'l':'L';pc='M';continue}
+      if(!cur||cur.z){cur={p:[x,y],s:[]};subs.push(cur)}
+      if(C==='L'){const a=ox+N(),b=oy+N();ln(a,b);x=a;y=b}
+      else if(C==='H'){const a=ox+N();ln(a,y);x=a}
+      else if(C==='V'){const b=oy+N();ln(x,b);y=b}
+      else if(C==='C'||C==='S'){
+        let a,b;
+        if(C==='C'){a=ox+N();b=oy+N()}else if(pc==='C'||pc==='S'){a=2*x-lc[0];b=2*y-lc[1]}else{a=x;b=y}
+        const c=ox+N(),e=oy+N(),f=ox+N(),g=oy+N();
+        cur.s.push([a,b,c,e,f,g]);lc=[c,e];x=f;y=g;
+      }else if(C==='Q'||C==='T'){
+        let a,b;
+        if(C==='Q'){a=ox+N();b=oy+N()}else if(pc==='Q'||pc==='T'){a=2*x-lq[0];b=2*y-lq[1]}else{a=x;b=y}
+        const e=ox+N(),f=oy+N();
+        cur.s.push([x+2/3*(a-x),y+2/3*(b-y),e+2/3*(a-e),f+2/3*(b-f),e,f]);lq=[a,b];x=e;y=f;
+      }else if(C==='A'){
+        const rx=N(),ry=N(),ph=N(),fa=Fl(),fs=Fl(),e=ox+N(),f=oy+N();
+        arcC(x,y,rx,ry,ph,fa,fs,e,f).forEach(q=>cur.s.push(q));x=e;y=f;
+      }else break;
+      pc=C;
+    }
+  }catch(e){}
+  return subs;
+}
+function dOf(el){
+  const g=n=>parseFloat(el.getAttribute(n))||0,t=el.localName;
+  if(t==='path')return el.getAttribute('d')||'';
+  if(t==='rect'){
+    const x=g('x'),y=g('y'),w=g('width'),h=g('height');let rx=g('rx'),ry=g('ry');
+    if(!rx&&ry)rx=ry;if(!ry&&rx)ry=rx;rx=Math.min(rx,w/2);ry=Math.min(ry,h/2);
+    return rx?`M${x+rx} ${y}H${x+w-rx}A${rx} ${ry} 0 0 1 ${x+w} ${y+ry}V${y+h-ry}A${rx} ${ry} 0 0 1 ${x+w-rx} ${y+h}H${x+rx}A${rx} ${ry} 0 0 1 ${x} ${y+h-ry}V${y+ry}A${rx} ${ry} 0 0 1 ${x+rx} ${y}Z`:`M${x} ${y}H${x+w}V${y+h}H${x}Z`;
+  }
+  if(t==='circle'||t==='ellipse'){
+    const cx=g('cx'),cy=g('cy'),rx=t==='circle'?g('r'):g('rx'),ry=t==='circle'?g('r'):g('ry');
+    return `M${cx-rx} ${cy}A${rx} ${ry} 0 1 0 ${cx+rx} ${cy}A${rx} ${ry} 0 1 0 ${cx-rx} ${cy}Z`;
+  }
+  if(t==='line')return `M${g('x1')} ${g('y1')}L${g('x2')} ${g('y2')}`;
+  if(t==='polygon'||t==='polyline'){
+    const p=(el.getAttribute('points')||'').trim().split(/[\s,]+/).map(Number);let s='';
+    for(let i=0;i<p.length-1;i+=2)s+=(i?'L':'M')+p[i]+' '+p[i+1];
+    return s+(t==='polygon'?'Z':'');
+  }
+  return '';
+}
+
+/* ====== IMPOR EPS -> SVG (subset PostScript/Illustrator) ====== */
+function epsToSvg(buf){
+  let u=new Uint8Array(buf);
+  if(u[0]===0xC5&&u[1]===0xD0&&u[2]===0xD3&&u[3]===0xC6){const dv=new DataView(buf),o=dv.getUint32(4,true);u=u.slice(o,o+dv.getUint32(8,true))}
+  const raw=new TextDecoder('latin1').decode(u),bb=/%%BoundingBox:\s*(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)/.exec(raw);
+  if(!bb)throw new Error('EPS tanpa BoundingBox belum didukung');
+  const [x0,y0,x1,y1]=bb.slice(1).map(Number),W=x1-x0,H=y1-y0,t=raw.replace(/%[^\r\n]*/g,' '),
+    tk=t.match(/\((?:[^()\\]|\\.)*\)|<[0-9a-fA-F\s]*>|[{}\[\]]|\/?[^\s(){}\[\]<>\/]+/g)||[],
+    st=[],gs=[],sh=[],cc=m=>{const[a,b,c,e,f,g]=m;M=[M[0]*a+M[2]*b,M[1]*a+M[3]*b,M[0]*c+M[2]*e,M[1]*c+M[3]*e,M[0]*f+M[2]*g+M[4],M[1]*f+M[3]*g+M[5]]},
+    T=(x,y)=>(M[0]*x+M[2]*y+M[4]).toFixed(2)+' '+(M[1]*x+M[3]*y+M[5]).toFixed(2),
+    r3=(r,g,b)=>[r,g,b].map(v=>Math.round(clamp(v,0,1)*255)),cm=(c,m,y,k)=>[c,m,y].map(v=>Math.round(255*(1-clamp(v,0,1))*(1-clamp(k,0,1))));
+  let M=[1,0,0,-1,-x0,y1],fc=[0,0,0],sc=[0,0,0],lw=1,cx=0,cy=0,sx=0,sy=0,pd='',bm=0;
+  const paint=(f,s,eo)=>{
+    if(!pd||/NaN/.test(pd))return;
+    const k=Math.sqrt(Math.abs(M[0]*M[3]-M[1]*M[2]));
+    sh.push(`<path d="${pd}" fill="${f?hex(fc):'none'}"${eo?' fill-rule="evenodd"':''} stroke="${s?hex(sc):'none'}" stroke-width="${(lw*k).toFixed(3)}" stroke-linejoin="round"/>`);
+  };
+  for(let i=0;i<tk.length;i++){
+    const w=tk[i];
+    if(w==='{'){let dp2=1;while(dp2&&++i<tk.length){if(tk[i]==='{')dp2++;else if(tk[i]==='}')dp2--}continue}
+    if(w==='['||w===']'||w==='}')continue;
+    if(/^[-+]?(\d+\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(w)){st.push(+w);continue}
+    if(w[0]==='/'||w[0]==='('||w[0]==='<'){st.push(null);continue}
+    const n=st.length,a=k=>st[n-k];
+    try{
+      switch(w){
+        case 'm':case 'moveto':cx=a(2);cy=a(1);sx=cx;sy=cy;pd+=`M${T(cx,cy)} `;st.length=n-2;break;
+        case 'l':case 'lineto':cx=a(2);cy=a(1);pd+=`L${T(cx,cy)} `;st.length=n-2;break;
+        case 'rmoveto':cx+=a(2);cy+=a(1);sx=cx;sy=cy;pd+=`M${T(cx,cy)} `;st.length=n-2;break;
+        case 'rlineto':cx+=a(2);cy+=a(1);pd+=`L${T(cx,cy)} `;st.length=n-2;break;
+        case 'c':case 'curveto':pd+=`C${T(a(6),a(5))} ${T(a(4),a(3))} ${T(a(2),a(1))} `;cx=a(2);cy=a(1);st.length=n-6;break;
+        case 'v':pd+=`C${T(cx,cy)} ${T(a(4),a(3))} ${T(a(2),a(1))} `;cx=a(2);cy=a(1);st.length=n-4;break;
+        case 'y':pd+=`C${T(a(4),a(3))} ${T(a(2),a(1))} ${T(a(2),a(1))} `;cx=a(2);cy=a(1);st.length=n-4;break;
+        case 'h':case 'closepath':pd+='Z ';cx=sx;cy=sy;break;
+        case 'n':case 'newpath':pd='';break;
+        case 'f':case 'F':case 'fill':paint(1,0,0);pd='';break;
+        case 'f*':case 'eofill':paint(1,0,1);pd='';break;
+        case 'S':case 'stroke':paint(0,1,0);pd='';break;
+        case 's':pd+='Z ';paint(0,1,0);pd='';break;
+        case 'B':paint(1,1,0);pd='';break;
+        case 'b':pd+='Z ';paint(1,1,0);pd='';break;
+        case 'B*':paint(1,1,1);pd='';break;
+        case 'b*':pd+='Z ';paint(1,1,1);pd='';break;
+        case 'setrgbcolor':fc=sc=r3(a(3),a(2),a(1));st.length=n-3;break;
+        case 'rg':fc=r3(a(3),a(2),a(1));st.length=n-3;break;
+        case 'RG':sc=r3(a(3),a(2),a(1));st.length=n-3;break;
+        case 'setgray':fc=sc=r3(a(1),a(1),a(1));st.length=n-1;break;
+        case 'g':fc=r3(a(1),a(1),a(1));st.length=n-1;break;
+        case 'G':sc=r3(a(1),a(1),a(1));st.length=n-1;break;
+        case 'setcmykcolor':fc=sc=cm(a(4),a(3),a(2),a(1));st.length=n-4;break;
+        case 'k':fc=cm(a(4),a(3),a(2),a(1));st.length=n-4;break;
+        case 'K':sc=cm(a(4),a(3),a(2),a(1));st.length=n-4;break;
+        case 'w':case 'setlinewidth':lw=a(1);st.length=n-1;break;
+        case 'translate':cc([1,0,0,1,a(2),a(1)]);st.length=n-2;break;
+        case 'scale':cc([a(2),0,0,a(1),0,0]);st.length=n-2;break;
+        case 'rotate':{const r=a(1)*Math.PI/180,c=Math.cos(r),s=Math.sin(r);cc([c,s,-s,c,0,0]);st.length=n-1;break}
+        case 'concat':case 'cm':cc(st.slice(n-6));st.length=n-6;break;
+        case 'gsave':case 'q':gs.push([M.slice(),fc,sc,lw]);break;
+        case 'grestore':case 'Q':if(gs.length)[M,fc,sc,lw]=gs.pop();break;
+        case 'colorimage':case 'image':case 'imagemask':bm++;st.length=0;break;
+        default:st.length=0;
+      }
+    }catch(e){st.length=0}
+  }
+  if(!sh.length)throw new Error('EPS ini tidak berisi path vektor yang bisa dibaca (mungkin bitmap atau format Illustrator terkompresi). Simpan ulang sebagai SVG lalu impor.');
+  if(bm)setTimeout(()=>toast('Gambar bitmap di dalam EPS diabaikan'),300);
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">${sh.join('')}</svg>`;
+}
+
+/* ====== EDITOR VEKTOR ====== */
+let VS,VB,VEL=[],VCL=[],VRS=[],vfmt='svg',vbase='vektor',vgrid={r:0,c:0},vskip=0,vgrad=0;
+const hx=c=>c&&hex(c.map(Math.round));
+const NSV='http://www.w3.org/2000/svg',ordDoc=(a,b)=>a.compareDocumentPosition(b)&4?-1:1;
+$('#vfile').onchange=e=>vload(e.target.files[0]);
+$('#vagain').onclick=()=>{$('#vfile').value='';$('#vfile').click()};
+async function vload(f){
+  if(!f)return;
+  vbase=f.name.replace(/\.[^.]+$/,'')||'vektor';
+  try{
+    const txt=/\.(eps|ps)$/i.test(f.name)?epsToSvg(await f.arrayBuffer()):await f.text();
+    mountSvg(txt);
+  }catch(e){toast(e.message||'File tidak bisa dibaca')}
+}
+function mountSvg(txt){
+  const doc=new DOMParser().parseFromString(txt,'image/svg+xml'),root=doc.documentElement;
+  if(root.localName!=='svg'||doc.querySelector('parsererror'))throw new Error('File SVG tidak valid');
+  root.querySelectorAll('script,foreignObject').forEach(n=>n.remove());
+  root.querySelectorAll('*').forEach(n=>[...n.attributes].forEach(a=>{if(/^on/i.test(a.name)||/^\s*javascript:/i.test(a.value))n.removeAttribute(a.name)}));
+  const st=$('#vstage');st.innerHTML='';VS=document.importNode(root,true);st.appendChild(VS);
+  $('#vws').classList.remove('hide');$('#vdrop').classList.add('hide');
+  const v=VS.getAttribute('viewBox'),a=v&&v.trim().split(/[\s,]+/).map(Number);
+  if(a&&a.length===4&&a[2]>0&&a[3]>0)VB={x:a[0],y:a[1],w:a[2],h:a[3]};
+  else{
+    const w=parseFloat(VS.getAttribute('width')),h=parseFloat(VS.getAttribute('height'));
+    if(w>0&&h>0)VB={x:0,y:0,w,h};
+    else{VS.style.cssText='position:absolute;width:300px;height:300px';const b=VS.getBBox();VB={x:b.x,y:b.y,w:b.width||1,h:b.height||1}}
+  }
+  VS.setAttribute('viewBox',`${VB.x} ${VB.y} ${VB.w} ${VB.h}`);VS.removeAttribute('width');VS.removeAttribute('height');
+  VS.style.cssText='position:absolute;inset:0;width:100%;height:100%';
+  st.style.aspectRatio=`${VB.w}/${VB.h}`;st.style.width=`min(100%,${(60*VB.w/VB.h).toFixed(2)}vh)`;
+  VRS=[];$('#vout').classList.add('hide');
+  vmeasure();
+  if(!VEL.length){toast('Tidak ada elemen gambar yang bisa dianalisa');return}
+  VH.clear();vcolors();vdetect();
+}
+function vmeasure(){
+  const R=VS.getScreenCTM().inverse();VEL=[];
+  VS.querySelectorAll('path,rect,circle,ellipse,line,polygon,polyline,text,image,use').forEach(el=>{
+    if(el.closest('defs,clipPath,mask,pattern,symbol,marker,linearGradient,radialGradient,filter'))return;
+    const cs=getComputedStyle(el),m=el.getScreenCTM();
+    if(!m||cs.display==='none'||cs.visibility==='hidden')return;
+    const hf=cs.fill!=='none',hs=cs.stroke!=='none',sp=/^(text|image|use)$/.test(el.localName);
+    if(!sp&&!hf&&!hs)return;
+    let b;try{b=el.getBBox()}catch(e){return}
+    const M=R.multiply(m),inf=hs?(parseFloat(cs.strokeWidth)||0)*Math.sqrt(Math.abs(M.a*M.d-M.b*M.c))/2:0,
+      P=[[b.x,b.y],[b.x+b.width,b.y],[b.x,b.y+b.height],[b.x+b.width,b.y+b.height]].map(([x,y])=>[M.a*x+M.c*y+M.e,M.b*x+M.d*y+M.f]),
+      xs=P.map(p=>p[0]),ys=P.map(p=>p[1]);
+    VEL.push({el,fc:hf?hx(rgbOf(cs.fill)):null,sc:hs?hx(rgbOf(cs.stroke)):null,os:el.getAttribute('style')||'',x0:Math.min(...xs)-inf,y0:Math.min(...ys)-inf,x1:Math.max(...xs)+inf,y1:Math.max(...ys)+inf});
+  });
+  VEL.forEach(e=>{e.bg=VEL.length>1&&(e.x1-e.x0)*(e.y1-e.y0)>.6*VB.w*VB.h});
+}
+let VBND=null;
+function vbands(iv,tol){
+  const o=[];
+  iv.slice().sort((p,q)=>p[0]-q[0]).forEach(([a,b])=>{const l=o[o.length-1];if(l&&a<=l[1]+tol)l[1]=Math.max(l[1],b);else o.push([a,b])});
+  return o;
+}
+const vitems=()=>{const rb=$('#vrb').checked;return VEL.filter(e=>!(rb&&e.bg)&&!e.dead)};
+function vdetect(){
+  const it=vitems(),T=[.2,.4,.8,1.5,2.5,4,6,9,12],m=Math.min(VB.w,VB.h)/100,
+    B=T.map(t=>({x:vbands(it.map(e=>[e.x0,e.x1]),t*m),y:vbands(it.map(e=>[e.y0,e.y1]),t*m)}));
+  let best=-1,bl=0;
+  for(let i=0;i<T.length;){
+    let j=i;while(j+1<T.length&&B[j+1].x.length===B[i].x.length&&B[j+1].y.length===B[i].y.length)j++;
+    if(B[i].x.length*B[i].y.length>1&&j-i+1>bl){bl=j-i+1;best=Math.floor((i+j)/2)}
+    i=j+1;
+  }
+  if(best<0)best=3;
+  VBND=B[best];$('#vrows').value=VBND.y.length;$('#vcols').value=VBND.x.length;vcluster();
+}
+function vedges(bd,n,lo,hi){
+  if(bd&&bd.length===n)return bd.slice(1).map((b,i)=>(bd[i][1]+b[0])/2);
+  return Array.from({length:n-1},(_,i)=>lo+(hi-lo)*(i+1)/n);
+}
+function vgridBuild(){
+  const rows=clamp(parseInt($('#vrows').value)||1,1,40),cols=clamp(parseInt($('#vcols').value)||1,1,40),it=vitems();
+  vgrid={r:rows,c:cols};
+  if(!it.length)return[];
+  const mn=k=>Math.min(...it.map(e=>e[k])),mx=k=>Math.max(...it.map(e=>e[k])),
+    xe=vedges(VBND&&VBND.x,cols,mn('x0'),mx('x1')),ye=vedges(VBND&&VBND.y,rows,mn('y0'),mx('y1')),
+    idx=(e,v)=>{let k=0;while(k<e.length&&v>=e[k])k++;return k},m=new Map();
+  it.forEach(e=>{
+    const c=idx(xe,(e.x0+e.x1)/2),r=idx(ye,(e.y0+e.y1)/2),k=r*cols+c;let g=m.get(k);
+    if(!g)m.set(k,g={r,c,els:[],x0:1e18,y0:1e18,x1:-1e18,y1:-1e18});
+    g.els.push(e.el);g.x0=Math.min(g.x0,e.x0);g.y0=Math.min(g.y0,e.y0);g.x1=Math.max(g.x1,e.x1);g.y1=Math.max(g.y1,e.y1);
+  });
+  const cs=[...m.values()].sort((a,b)=>a.r-b.r||a.c-b.c),
+    side=Math.max(...cs.map(g=>Math.max(g.x1-g.x0,g.y1-g.y0)))*(1+(+$('#vpad').value)/100);
+  cs.forEach(g=>{g.cx=(g.x0+g.x1)/2;g.cy=(g.y0+g.y1)/2;g.s=side;g.on=true});
+  return cs;
+}
+function vcluster(){$('#vpv').textContent=$('#vpad').value;VCL=vgridBuild();drawOv()}
+['vrows','vcols','vpad'].forEach(i=>{$('#'+i).oninput=vcluster});
+$('#vrb').onchange=vdetect;$('#vauto').onclick=vdetect;
+$('#vall').onclick=()=>{const v=!VCL.every(c=>c.on);VCL.forEach(c=>{c.on=v});drawOv()};
+[2,3,4,5].forEach(n=>{
+  const b=document.createElement('button');b.className='chip';b.textContent=`${n} × ${n}`;
+  b.onclick=()=>{$('#vrows').value=n;$('#vcols').value=n;vcluster()};$('#vpre').appendChild(b);
+});
+function drawOv(){
+  let o=VS.parentNode.querySelector('.ov');if(o)o.remove();
+  o=document.createElementNS(NSV,'svg');o.setAttribute('class','ov');o.setAttribute('viewBox',`${VB.x} ${VB.y} ${VB.w} ${VB.h}`);
+  o.style.cssText='position:absolute;inset:0;width:100%;height:100%';
+  const fs=Math.min(VB.w,VB.h)*.03;
+  VCL.forEach((c,i)=>{
+    const r=document.createElementNS(NSV,'rect'),x=c.cx-c.s/2,y=c.cy-c.s/2;
+    r.setAttribute('x',x);r.setAttribute('y',y);r.setAttribute('width',c.s);r.setAttribute('height',c.s);r.setAttribute('class',c.on?'':'off');
+    r.onclick=()=>{c.on=!c.on;r.setAttribute('class',c.on?'':'off');vinfo()};
+    const t=document.createElementNS(NSV,'text');
+    t.setAttribute('x',x+fs*.3);t.setAttribute('y',y+fs*1.1);t.setAttribute('font-size',fs);t.textContent=i+1;
+    o.append(r,t);
+  });
+  VS.after(o);vinfo();
+}
+function vinfo(){
+  const on=VCL.filter(c=>c.on).length,tot=vgrid.r*vgrid.c;
+  $('#vinfo').textContent=VCL.length?`Grid ${vgrid.r} × ${vgrid.c}: ${VCL.length} ikon terisi${tot>VCL.length?`, ${tot-VCL.length} sel kosong dilewati`:''}, ${on} dipilih. Semua kotak persegi sama besar dengan ikon di tengah. Ketuk kotak untuk memilih atau membatalkan.`:'Tidak ada ikon terdeteksi. Periksa jumlah baris dan kolom.';
+  $('#vsplit').textContent=on?`Pisahkan ${on} ikon terpilih`:'Pisahkan ikon terpilih';
+}
+function buildSvg(c){
+  const out=VS.cloneNode(false);['width','height','viewBox','style','class'].forEach(a=>out.removeAttribute(a));
+  const s=c.s,x=c.cx-s/2,y=c.cy-s/2,r=v=>+v.toFixed(3);
+  out.setAttribute('viewBox',`${r(x)} ${r(y)} ${r(s)} ${r(s)}`);out.setAttribute('width',r(s));out.setAttribute('height',r(s));
+  [...VS.children].forEach(ch=>{if(/^(defs|style|linearGradient|radialGradient|clipPath|mask|pattern|filter|symbol|marker)$/.test(ch.localName))out.appendChild(ch.cloneNode(true))});
+  const map=new Map([[VS,out]]),ens=n=>{if(map.has(n))return map.get(n);const p=ens(n.parentNode),k=n.cloneNode(false);p.appendChild(k);map.set(n,k);return k};
+  c.els.slice().sort(ordDoc).forEach(e=>ens(e.parentNode).appendChild(e.cloneNode(true)));
+  prune(out);
+  return{svg:new XMLSerializer().serializeToString(out),vx:x,vy:y,vw:s,vh:s};
+}
+$('#vsplit').onclick=()=>{
+  const sel=VCL.filter(c=>c.on);if(!sel.length)return toast('Pilih minimal satu ikon');
+  VRS=sel.map(c=>({c,...buildSvg(c),on:true}));
+  VRS.forEach(r=>{r.url=URL.createObjectURL(new Blob([r.svg],{type:'image/svg+xml'}))});
+  vrender();$('#vout').classList.remove('hide');$('#vout').scrollIntoView({behavior:'smooth',block:'start'});
+};
+const vnameList=()=>$('#vnames').value.split(/\r?\n/).map(l=>l.trim().replace(/^(?:\d+\s*[.)\-:]\s+|[-*\u2022]\s+)/,'').replace(/\.(svg|eps|png|jpe?g|ai)$/i,'').replace(/[\\/:*?"<>|\x00-\x1f]/g,'-').replace(/\s+/g,' ').replace(/^\.+|\.+$/g,'').trim()).filter(l=>l);
+function vfinal(){
+  const L=vnameList(),seen=new Map();
+  return VRS.map((r,i)=>{
+    const n=L[i]||`${vbase}_${String(i+1).padStart(2,'0')}`,k=n.toLowerCase(),c=(seen.get(k)||0)+1;
+    seen.set(k,c);return c>1?`${n}_${c}`:n;
+  });
+}
+function vnstat(){
+  const L=vnameList(),n=VRS.length;
+  $('#vnstat').textContent=!L.length?'Belum ada nama kustom. Nama bawaan dipakai. Baris kosong dilewati dan penomoran seperti "1." di depan nama dihapus otomatis.':L.length<n?`${L.length} nama untuk ${n} ikon. Sisanya memakai nama bawaan.`:L.length>n?`${L.length} nama untuk ${n} ikon. ${L.length-n} nama terakhir diabaikan.`:`${n} nama cocok dengan ${n} ikon.`;
+}
+function vrender(){
+  const b=$('#vres'),NM=vfinal();b.innerHTML='';
+  VRS.forEach((r,i)=>{
+    const d=document.createElement('div');d.className='th cap'+(r.on?'':' off');
+    const im=new Image();im.src=r.url;const n=document.createElement('i');n.textContent=i+1;
+    const c=document.createElement('small');c.textContent=NM[i];d.append(im,n,c);
+    d.onclick=()=>{r.on=!r.on;d.classList.toggle('off',!r.on);vcount()};b.appendChild(d);
+  });
+  vcount();vnstat();
+}
+$('#vnames').oninput=()=>{if(VRS.length)vrender();else vnstat()};
+$('#vnclear').onclick=()=>{$('#vnames').value='';if(VRS.length)vrender()};
+$('#vnpaste').onclick=async()=>{
+  try{$('#vnames').value=await navigator.clipboard.readText();if(VRS.length)vrender()}
+  catch(e){toast('Clipboard tidak bisa dibaca. Tempel manual ke kotak nama')}
+};
+function vcount(){
+  const n=VRS.filter(r=>r.on).length;
+  $('#vcnt').textContent=`${n} dari ${VRS.length} ikon dipilih`;$('#vsave').textContent=n>1?`Simpan ${n} file (ZIP)`:'Simpan';
+}
+$('#vsel').onclick=()=>{const v=!VRS.every(r=>r.on);VRS.forEach(r=>{r.on=v});vrender()};
+
+/* ---------- ekspor ---------- */
+const VN={svg:'SVG bersih: tanpa metadata editor dan definisi tak terpakai, dengan judul. Mode microstock memberi artboard persegi seragam.',eps:'EPS standar DSC Level 2: vektor murni, tanpa bitmap dan transparansi, artboard persegi. Gradasi dirata-ratakan, sedangkan teks, gambar tertanam, dan clipping dilewati.',png:'PNG menjaga transparansi.',jpg:'JPG tidak mendukung transparansi. Area transparan diisi putih.'};
+[['svg','SVG'],['eps','EPS'],['png','PNG'],['jpg','JPG']].forEach(([k,t])=>{
+  const b=document.createElement('button');b.className='chip'+(k===vfmt?' on':'');b.textContent=t;
+  b.onclick=()=>{vfmt=k;document.querySelectorAll('#vf .chip').forEach(x=>x.classList.toggle('on',x===b));$('#vszw').classList.toggle('hide',k!=='png'&&k!=='jpg');$('#vszm').classList.toggle('hide',k==='png'||k==='jpg');$('#vnote').textContent=VN[k]};
+  $('#vf').appendChild(b);
+});
+$('#vnote').textContent=VN.svg;
+function rast(svg,long){
+  return new Promise((ok,no)=>{
+    const u=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'})),im=new Image();
+    im.onload=()=>{
+      const r=im.naturalWidth/im.naturalHeight||1,w=r>=1?long:Math.max(1,Math.round(long*r)),h=r>=1?Math.max(1,Math.round(long/r)):long,c=document.createElement('canvas');
+      c.width=w;c.height=h;c.getContext('2d').drawImage(im,0,0,w,h);URL.revokeObjectURL(u);ok(c);
+    };
+    im.onerror=()=>no(new Error('Render ikon gagal'));im.src=u;
+  });
+}
+function rgbOf(s){
+  if(!s||s==='none')return null;
+  const u=/url\(["']?#([^"')]+)/.exec(s);
+  if(u){
+    const g=VS.querySelector('#'+CSS.escape(u[1]));let stp=g?g.querySelectorAll('stop'):[];
+    if(g&&!stp.length){const h=g.getAttribute('href')||g.getAttribute('xlink:href'),g2=h&&VS.querySelector('#'+CSS.escape(h.slice(1)));stp=g2?g2.querySelectorAll('stop'):[]}
+    if(!stp.length)return[128,128,128];
+    const a=[...stp].map(x=>rgbOf(getComputedStyle(x).stopColor)||[0,0,0]);
+    return[0,1,2].map(k=>Math.round(a.reduce((s,c)=>s+c[k],0)/a.length));
+  }
+  const m=s.match(/[\d.]+/g);return m&&m.length>=3?m.slice(0,3).map(Number):[0,0,0];
+}
+async function vblob(r,nm){
+  const ms=$('#vms').checked;
+  if(vfmt==='svg')return new Blob([ms?msSvg(r,nm):r.svg],{type:'image/svg+xml'});
+  if(vfmt==='eps'){const o=epsFrom(r,nm);vskip+=o.skip;return new Blob([o.t],{type:'application/postscript'})}
+  const c=await rast(r.svg,+$('#vsz').value);
+  return new Promise(ok=>(vfmt==='png'?c:flat(c)).toBlob(ok,vfmt==='png'?'image/png':'image/jpeg',.95));
+}
+$('#vsave').onclick=async()=>{
+  const sel=VRS.map((r,i)=>[r,i]).filter(([r])=>r.on);
+  if(!sel.length)return toast('Pilih minimal satu ikon');
+  const btn=$('#vsave'),old=btn.textContent;btn.disabled=true;vskip=0;vgrad=0;const NM=vfinal();
+  try{
+    const files=[];let n=0;
+    for(const[r,i]of sel){
+      btn.textContent=`Memproses ${++n} dari ${sel.length}...`;await tick();
+      const nm=NM[i];files.push({name:`${nm}.${vfmt}`,blob:await vblob(r,nm)});
+    }
+    if(files.length===1)dl(files[0].blob,files[0].name);
+    else{for(const f of files)f.data=new Uint8Array(await f.blob.arrayBuffer());dl(zip(files),`${vbase}_${vfmt}.zip`)}
+    toast(vskip?`Disimpan. ${vskip} elemen teks atau gambar dilewati di EPS`:vgrad?`Disimpan. ${vgrad} elemen bergradasi diratakan jadi satu warna di EPS`:'Selesai disimpan');
+  }catch(e){toast('Gagal menyimpan: '+e.message)}
+  btn.disabled=false;btn.textContent=old;vcount();
+};
+
+/* ====== PILIHAN WARNA ====== */
+const VH=new Set();let VCOL=[];
+function vcolors(){
+  const m=new Map();
+  VEL.forEach(e=>[e.fc,e.sc].forEach(k=>{
+    if(!k)return;let c=m.get(k);if(!c)m.set(k,c={k,n:0,bg:false});
+    c.n++;if(e.bg)c.bg=true;
+  }));
+  VCOL=[...m.values()].sort((a,b)=>b.n-a.n);drawCols();
+}
+function drawCols(){
+  const mk=(c,rm)=>{
+    const b=document.createElement('button');b.className='sc'+(rm?' rm':'');
+    b.innerHTML=`<i style="background:${c.k}"></i><span>${c.k.toUpperCase()}</span><small>${c.n}${c.bg?' · latar':''}</small>`;
+    b.onclick=()=>{if(rm)VH.delete(c.k);else VH.add(c.k);vapply()};return b;
+  };
+  const a=$('#vcl'),x=$('#vcx');a.innerHTML='';x.innerHTML='';
+  VCOL.forEach(c=>(VH.has(c.k)?x:a).appendChild(mk(c,VH.has(c.k))));
+  $('#vcn').textContent=`${VCOL.length-VH.size} warna dipakai`;
+}
+function vapply(){
+  VEL.forEach(e=>{
+    e.dead=!!(e.fc||e.sc)&&(!e.fc||VH.has(e.fc))&&(!e.sc||VH.has(e.sc));
+    const st=e.el.style;st.cssText=e.os;
+    if(e.dead)st.display='none';
+    else{if(e.fc&&VH.has(e.fc))st.fill='none';if(e.sc&&VH.has(e.sc))st.stroke='none'}
+  });
+  const on=new Map(VCL.map(c=>[c.r+','+c.c,c.on]));
+  VCL=vgridBuild();VCL.forEach(c=>{const k=c.r+','+c.c;if(on.has(k))c.on=on.get(k)});
+  drawCols();drawOv();
+  if(VRS.length){VRS=[];$('#vout').classList.add('hide');toast('Warna berubah. Tekan Pisahkan lagi untuk memperbarui hasil')}
+}
+$('#vcr').onclick=()=>{if(VH.size){VH.clear();vapply()}};
+function prune(o){
+  const G=/^(linearGradient|radialGradient|clipPath|mask|pattern|filter|symbol|marker)$/;
+  for(let i=0;i<3;i++){
+    const t=new XMLSerializer().serializeToString(o),u=new Set([...t.matchAll(/(?:url\(["']?#|href=["']#)([^"')\s]+)/g)].map(m=>m[1])),
+      chk=n=>{if(G.test(n.localName)&&!u.has(n.id))n.remove()};
+    [...o.children].forEach(ch=>{if(ch.localName==='defs')[...ch.children].forEach(chk);else chk(ch)});
+  }
+}
+function msSvg(r,name){
+  const d=new DOMParser().parseFromString(r.svg,'image/svg+xml'),o=d.documentElement,k=+$('#vsize').value;
+  o.setAttribute('width',k);o.setAttribute('height',k);o.setAttribute('version','1.1');
+  [...o.querySelectorAll('*')].forEach(n=>{if(/sodipodi|inkscape/.test(n.namespaceURI||'')||n.localName==='metadata')n.remove()});
+  [o,...o.querySelectorAll('*')].forEach(n=>[...n.attributes].forEach(a=>{if(/^(inkscape|sodipodi|serif|data-|xmlns:(inkscape|sodipodi|serif))/i.test(a.name))n.removeAttribute(a.name)}));
+  const t=d.createElementNS(NSV,'title');t.textContent=name;o.insertBefore(t,o.firstChild);
+  return '<?xml version="1.0" encoding="UTF-8"?>\n'+new XMLSerializer().serializeToString(o);
+}
+function epsFrom(r,name){
+  const ms=$('#vms').checked,k=ms?(+$('#vsize').value)/r.vw:1,W=r.vw*k,H=r.vh*k,
+    R=VS.getScreenCTM().inverse(),X=x=>((x-r.vx)*k).toFixed(3),Y=y=>((r.vy+r.vh-y)*k).toFixed(3),op=v=>{const n=parseFloat(v);return isNaN(n)?1:n};
+  let t=`%!PS-Adobe-3.0 EPSF-3.0\n%%Creator: Potong & Pisah Ikon\n%%Title: ${name}.eps\n%%CreationDate: ${new Date().toISOString().slice(0,10)}\n%%BoundingBox: 0 0 ${Math.ceil(W)} ${Math.ceil(H)}\n%%HiResBoundingBox: 0 0 ${W.toFixed(4)} ${H.toFixed(4)}\n%%LanguageLevel: 2\n%%Pages: 1\n%%DocumentData: Clean7Bit\n%%EndComments\n%%BeginProlog\n%%EndProlog\n%%BeginSetup\n%%EndSetup\n%%Page: 1 1\n%%BeginPageSetup\n%%EndPageSetup\ngsave\n`,skip=0;
+  r.c.els.slice().sort(ordDoc).forEach(el=>{
+    if(/^(text|image|use)$/.test(el.localName)){skip++;return}
+    const cs=getComputedStyle(el),d=dOf(el),m=el.getScreenCTM();
+    if(!d||!m||cs.display==='none')return;
+    const M=R.multiply(m),mix=(c,o)=>c&&c.map(v=>Math.round(255-(255-v)*o)),
+      fc=mix(rgbOf(cs.fill),op(cs.fillOpacity)*op(cs.opacity)),sc=mix(rgbOf(cs.stroke),op(cs.strokeOpacity)*op(cs.opacity));
+    if(!fc&&!sc)return;
+    const subs=parseD(d);if(!subs.length)return;
+    if(/url\(/.test(cs.fill))vgrad++;
+    const P=(x,y)=>`${X(M.a*x+M.c*y+M.e)} ${Y(M.b*x+M.d*y+M.f)}`;
+    let p='newpath\n';
+    subs.forEach(s=>{p+=`${P(s.p[0],s.p[1])} moveto\n`;s.s.forEach(q=>{p+=`${P(q[0],q[1])} ${P(q[2],q[3])} ${P(q[4],q[5])} curveto\n`});if(s.z)p+='closepath\n'});
+    const sw=(parseFloat(cs.strokeWidth)||1)*Math.sqrt(Math.abs(M.a*M.d-M.b*M.c))*k,pc=c=>c.map(v=>(v/255).toFixed(4)).join(' ')+' setrgbcolor\n',fo=cs.fillRule==='evenodd'?'eofill':'fill';
+    t+=p;
+    if(fc&&sc)t+=`gsave\n${pc(fc)}${fo}\ngrestore\n`;else if(fc)t+=pc(fc)+fo+'\n';
+    if(sc)t+=`${pc(sc)}${sw.toFixed(3)} setlinewidth\n${{butt:0,round:1,square:2}[cs.strokeLinecap]||0} setlinecap\n${{miter:0,round:1,bevel:2}[cs.strokeLinejoin]||0} setlinejoin\nstroke\n`;
+  });
+  return{t:t+'grestore\nshowpage\n%%Trailer\n%%EOF\n',skip};
+}
+
+setApp('v');
+</script>
+</body>
+</html>
