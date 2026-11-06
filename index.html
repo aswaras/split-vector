@@ -145,7 +145,7 @@ textarea{font:inherit;font-size:14px;color:var(--tx);background:var(--bg);border
     </div>
   </section>
 <section id="vs" class="hide" style="display:grid;gap:16px">
-  <label id="vdrop"><b>Pilih file SVG atau EPS</b><span>Aplikasi menganalisa desain, mendeteksi tiap ikon, lalu memisahkannya</span><input id="vfile" type="file" accept=".svg,.eps,.ps,image/svg+xml,application/postscript" hidden></label>
+  <label id="vdrop"><b>Pilih file SVG atau EPS</b><span>Aplikasi menganalisa desain, mendeteksi tiap ikon, lalu memisahkannya</span><input id="vfile" type="file" hidden></label>
   <div id="vws" class="hide" style="display:grid;gap:14px">
     <div class="card"><div id="vstage"></div><div id="vinfo"></div></div>
     <div class="card" style="display:grid;gap:12px">
@@ -789,8 +789,9 @@ async function vload(f){
   if(!f)return;
   vbase=f.name.replace(/\.[^.]+$/,'')||'vektor';
   try{
-    const txt=/\.(eps|ps)$/i.test(f.name)?epsToSvg(await f.arrayBuffer()):await f.text();
-    mountSvg(txt);
+    const buf=await f.arrayBuffer(),u=new Uint8Array(buf,0,Math.min(4,buf.byteLength)),
+      isEps=/\.(eps|ps)$/i.test(f.name)||(u[0]===0xC5&&u[1]===0xD0)||(u[0]===0x25&&u[1]===0x21);
+    mountSvg(isEps?epsToSvg(buf):new TextDecoder().decode(buf));
   }catch(e){toast(e.message||'File tidak bisa dibaca')}
 }
 function mountSvg(txt){
